@@ -14,8 +14,8 @@ The logfind tool should have these basic features:
 ----------------------------------------------------------------------------------------
 -- TODO ---------
 1. Find directories where .log are stored
-2. When program runs it checks if ~/.logfind exists. If not create it.
+2. When program runs it checks if ~/.logfind exists. If not create it. -> DONE
 3. Implement cli arguments parser -> FIRST TASK
 4. Implement function which can open all files in specified dir and print it to the screen.
 5. Implement find operation (simple, without AND, OR operations)
-6. Upgrade find with AND, OR operations. 
+6. Upgrade find with AND, OR operations.

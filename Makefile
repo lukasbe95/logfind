@@ -2,6 +2,6 @@ CC=gcc
 CFLAGS=-Wall -DNDEBUG
 
 all:
-	$(CC) $(CFLAGS) logfind.c -o logfind
+	@$(CC) $(CFLAGS) logfind.c -o logfind.o
 clean:
-	rm logfind
+	@rm logfind.o
