@@ -1,0 +1,21 @@
+The logfind tool should have these basic features:
+	1. This tool takes any sequence of words and assumes I mean “and” for
+	them. So logfind zedshaw smart guy will find all files that have
+	zedshaw and smart and guy in them.
+	2. It takes an optional argument of -o if the parameters are meant to be or
+	logic.
+	3. It loads the list of allowed log files from ~/.logfind.
+	4. The list of file names can be anything that the glob function allows.
+	Refer to man 3 glob to see how this works. I suggest starting with just a
+	flat list of exact files, and then add glob functionality.
+	5. You should output the matching lines as you scan, and try to match them
+	as fast as possible.
+
+----------------------------------------------------------------------------------------
+-- TODO ---------
+1. Find directories where .log are stored
+2. When program runs it checks if ~/.logfind exists. If not create it.
+3. Implement cli arguments parser -> FIRST TASK
+4. Implement function which can open all files in specified dir and print it to the screen.
+5. Implement find operation (simple, without AND, OR operations)
+6. Upgrade find with AND, OR operations. 
