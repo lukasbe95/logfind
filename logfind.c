@@ -82,6 +82,32 @@ is_or(int array_size, char *arguments[])
     }
     return 0;
 }
+char**
+copy_array(char** array, size_t size)
+{
+    //need to be tested
+    char **new_array = malloc((size+1)*sizeof(*new_array));
+    for(int i = 0; i < size; i++)
+    {
+        size_t length = strlen(argv[i]) + 1;
+        new_array[i] = malloc(length);
+        memcpy(new_array[i], array[i], length);
+    }
+    return new_array;
+}
+int
+search_or(char **keywords, FILE *file)
+{
+    //need to be implemented
+    return 0;
+}
+int
+search_and(char **keywords, FILE *file)
+{
+    //need to be implemented
+    return 0;
+}
+
 int main(int argc, char *argv[]){
     check(argc > 1, "There is nothing to find.");
     char **key_words = malloc((argc)*sizeof(*key_words));
@@ -91,9 +117,13 @@ int main(int argc, char *argv[]){
         key_words[i-1] = malloc(length);
         memcpy(key_words[i-1], argv[i], length);
     }
+    free(key_words[0]);
     for (int j = 0; j < argc - 1; j++) //new array is smaller, so must be argc-1
     {
-        printf("%s\n", key_words[j]);
+        if(strcmp(key_words[j], "") != 0)
+        {
+            printf("%d: %s\n", j+1, key_words[j]);
+        }
     }
     // printf("%d\n", check_logfile());
     // check(check_logfile(), "Please create logfile in home directory.")
