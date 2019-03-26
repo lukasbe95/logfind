@@ -7,10 +7,12 @@
 
 #define DEFAULT_FILE "/home/lukas/logfind"
 
-int search_in_file(char path[], char filename[], int only_print);
-
+int is_or(int array_size, char **arguments);
+int print_file(char path[], int bool_print);
+int search_or(char **keywords, char path_to_file[], int size);
+int search_and(char **keywords, char path_to_file[], int size);
 int
-list_directory(char path[])
+list_directory(char path[], char **keywords, int keywords_size)
 {
     DIR *d;
     struct dirent *dir;
@@ -19,8 +21,17 @@ list_directory(char path[])
     {
         while ((dir = readdir(d)) != NULL)
         {
-            // printf("%s\n", dir->d_name);
-            search_in_file(path, dir->d_name, 0);
+            char whole_path[256];
+            strcpy(whole_path, path);
+            strcat(whole_path, dir->d_name);
+            if(is_or(keywords_size, keywords) == 0)
+            {
+                print_file(whole_path, search_or(keywords, whole_path, keywords_size));
+            }
+            else
+            {
+                print_file(whole_path, search_and(keywords, whole_path, keywords_size));
+            }
         }
         closedir(d);
 
@@ -37,28 +48,26 @@ check_argument(char *line, char arg[])
     return -1;
 }
 int
-search_in_file(char path[], char filename[], int only_print)
+print_file(char path[], int bool_print)
 {
-    char whole_path[256];
-    FILE *file;
-    char *line = NULL;
-    size_t len = 0;
-    ssize_t read;
-    strcpy(whole_path, path);
-    strcat(whole_path, filename);
-    file = fopen(whole_path, "r");
-    if (file != NULL)
-    {
-        printf("FILENAME: %s\n\n", whole_path);
-        while ((read = getline(&line, &len, file)) != -1)
-        {
-            if(check_argument(line, "dupa") == 0)
-            {
-                printf("%s", line);
-            }
-        }
+    if (bool_print == 0) {
+        printf("%s\n", path);
     }
-    fclose(file);
+    // if (bool_print == 0) {
+    //     FILE *file;
+    //     file = fopen(path, "r");
+    //     char *line = NULL;
+    //     size_t len = 0;
+    //     ssize_t read;
+    //     printf("FILENAME: %s\n\n", path);
+    //     while ((read = getline(&line, &len, file)) != -1)
+    //     {
+    //         printf("%s", line);
+    //     }
+    //     fclose(file);
+    //     return 0;
+    // }
+    // return -1;
     return 0;
 }
 
@@ -74,37 +83,82 @@ check_logfile()
     return 0;
 }
 int
-is_or(int array_size, char *arguments[])
+is_or(int array_size, char **arguments)
 {
     for (int i = 0; i < array_size; i++) {
         if(strcmp(arguments[i],"-o") == 0)
-            return 1;
+            return 0;
     }
-    return 0;
+    return -1;
 }
 char**
 copy_array(char** array, size_t size)
 {
-    //need to be tested
     char **new_array = malloc((size+1)*sizeof(*new_array));
     for(int i = 0; i < size; i++)
     {
-        size_t length = strlen(argv[i]) + 1;
+        size_t length = strlen(array[i]) + 1;
         new_array[i] = malloc(length);
         memcpy(new_array[i], array[i], length);
     }
     return new_array;
 }
 int
-search_or(char **keywords, FILE *file)
+search_or(char **keywords, char path_to_file[], int size)
 {
-    //need to be implemented
-    return 0;
+    char **local = copy_array(keywords, size);
+    FILE *file;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    file = fopen(path_to_file, "r");
+    while ((read = getline(&line, &len, file)) != -1)
+    {
+        for (int i = 0; i < size; i++) {
+            if(strcmp(local[i], "") == 0)
+            {
+                if (check_argument(line, local[i]) == 0)
+                {
+                    fclose(file);
+                    free(local);
+                    return 0;
+                }
+            }
+        }
+    }
+    fclose(file);
+    free(local);
+    return -1;
 }
 int
-search_and(char **keywords, FILE *file)
+search_and(char **keywords, char path_to_file[], int size)
 {
-    //need to be implemented
+    char **local = copy_array(keywords, size);
+    FILE *file;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    file = fopen(path_to_file, "r");
+    while ((read = getline(&line, &len, file)) != -1)
+    {
+        for (int i = 0; i < size; i++) {
+            if(strcmp(local[i], "") == 0)
+            {
+                if (check_argument(line, local[i]) == 0)
+                {
+                    free(local[i]);
+                }
+            }
+        }
+    }
+    fclose(file);
+    for(int j = 0; j < size; j++)
+    {
+        if (strcmp(local[j], "") != 0) {
+            // free(local);
+            return -1;
+        }
+    }
     return 0;
 }
 
@@ -128,7 +182,7 @@ int main(int argc, char *argv[]){
     // printf("%d\n", check_logfile());
     // check(check_logfile(), "Please create logfile in home directory.")
     // printf("%d\n", is_or(argc, argv));
-    // list_directory("/home/lukas/");
+    list_directory("/home/lukas/", key_words, argc - 1);
     return 0;
     error:
     return -1;

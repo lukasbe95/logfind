@@ -18,6 +18,6 @@ The logfind tool should have these basic features:
 3. Implement cli arguments parser -> FIRST TASK -> check if is "-o" flag -> DONE
 4. Implement function which can open all files in specified dir and print it to the screen. -> DONE
 5. Implement find operation (simple, without AND, OR operations)
-6. Upgrade find with AND, OR operations.
+6. Upgrade find with AND, OR operations. -> There some BUG there 
 
-To check search keywords for file we need to copy keyword table, and "free" every argument we found.  
+To check search keywords for file we need to copy keyword table, and "free" every argument we found.
